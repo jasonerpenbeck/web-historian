@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-
+var http = require('http');
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -58,7 +58,29 @@ exports.isURLArchived = function(toSearch, callback){
   });
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(url,destination,callback){
+  var body = '';
+  url = 'http://' + url;
 
+  console.log("url:",url);
+  console.log('OG: ',destination);
+  http.get(url,function(response){
 
+    response.on('data', function(chunk) {
+      body += chunk;
+    });
+
+    response.on('error', function(err) {
+      console.log('Error while downloading a URL: ',err);
+      err = err;
+    });
+
+    response.on('end', function() {
+      fs.appendFile(destination,body, function(err) {
+        if(err) {
+          console.log('Here is an error that happened when appending from downloadURL: ', err);
+        }
+      });
+    });
+  });
 };

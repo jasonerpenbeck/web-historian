@@ -1,14 +1,8 @@
 // eventually, you'll have some code here that uses the code in `archive-helpers.js`
 // to actually download the urls you want to download.
 
-
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
-// var url = require('url');
-// var path = require('path');
-// var headers = require('./http-helpers');
-
-
 
 archive.readListOfUrls(archive.paths.list, function(err, data){
   if(err){
@@ -20,14 +14,25 @@ archive.readListOfUrls(archive.paths.list, function(err, data){
 
     for(var i = 0; i < arrayOfSites.length; i++) {
       console.log('After lunch, we will fetch: ',arrayOfSites[i]);
+
+      var dest = archive.paths.archivedSites + arrayOfSites[i];
+
+      archive.downloadUrls(arrayOfSites[i], dest);
+
+      // archive.downloadUrls(arrayOfSites[i], dest , function(err,data) {
+      //   if(err) {
+      //     console.log('callback error within Fetcher',err);
+      //   } else {
+      //     fs.appendFile(dest, data , function(err) {
+      //       if(err) {
+      //         console.log('Append File Error within downloadUrls function: ',err);
+      //       } else {
+      //         console.log('Write something to: ',dest);
+      //       }
+      //     });
+      //   }
+      // });
     }
-
-
-    fs.appendFile(archive.paths.fetched, data, function(err){
-          if(err){
-            console.log(err);
-          }
-    });
   }
 });
 

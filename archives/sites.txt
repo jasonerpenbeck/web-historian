@@ -1,2 +1,6 @@
 www.google.com
 www.espn.com
+www.amazon.com
+www.cnn.com
+www.amazon.com
+www.sfgate.com
