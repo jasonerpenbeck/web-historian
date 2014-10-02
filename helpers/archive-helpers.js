@@ -8,10 +8,9 @@ var _ = require('underscore');
  * if you move any files, you'll only need to change your code in one place! Feel free to
  * customize it in any way you wish.
  */
-
 exports.paths = {
-  'siteAssets' : path.join(__dirname, '../web/public'),
-  'archivedSites' : path.join(__dirname, '../archives/sites'),
+  'siteAssets' : path.join(__dirname, '../web/public/'),
+  'archivedSites' : path.join(__dirname, '../archives/sites/'),
   'list' : path.join(__dirname, '../archives/sites.txt')
 };
 
@@ -25,17 +24,47 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(file){
+  var listOfURLs;
+
+  fs.readFile(file, function(err, data){
+    if(err){
+      console.log(err);
+    } else {
+      listOfURLS = data;
+    }
+  });
+
+  return listOfURLs;
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(content, matchTo){
+  if(content.indexOf(matchTo) >= 0) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(file, urlToAdd){
+
+  fs.appendFile(file, urlToAdd, function(err) {
+    if(err){
+      console.log(err);
+    } else {
+      console.log('file was saved!');
+    }
+  });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(toSearch, callback){
+  console.log("callback:", callback);
+  fs.open(toSearch,'r', function(err,fd) {
+    callback(err, fd);
+  });
 };
 
 exports.downloadUrls = function(){
+
+
 };
