@@ -47,44 +47,43 @@ exports.handleRequest = function (req, res, statusCode) {
         if(msg.slice(4,8) === 'http') {
           searchURL = archive.paths.archivedSites + msg.slice(msg.indexOf('//') + 2);
         } else {
-          searchURL = archive.paths.archivedSites + msg;
+          searchURL = archive.paths.archivedSites + msg.slice(4);
         }
 
-/*         console.log('searchURL: ',searchURL); */
 
     // handle whether URL is already archived
-        if(archive.isURLArchived(searchURL, function(err, fd){
+        archive.isURLArchived(searchURL, function(err, fd){
           if(err) {
-            return false;
-          } else {
-            return true;
-          } }))
-
-           {
-            console.log('File exists.  Send it BACK!');
-
-            fs.readFile(archive.paths.archivedSites + 'searchURL', 'utf8', function(err, data) {
-            if(err){
-              console.log(err);
-            } else {
-              headers.sendData(res, data, 200);
-            }
-          });
-
-
-          } else {
-
             console.log('File does not exist.  Add to sites.txt');
-            headers.sendData(res, loadingPath, 200);
-            fs.appendFile(archive.paths.list,msg, function(err) {
-              if(err) {console.log(err);}
 
+            fs.readFile(loadingPath, 'utf8', function(err, data) {
+              if(err){
+                console.log(err);
+              } else {
+
+                headers.sendData(res, data, 200);
+              }
             });
 
-/*             headers.sendData(res, data, 200); */
+            fs.appendFile(archive.paths.list, msg.slice(11)+'\n', function(err) {
+              if(err) {console.log(err);}
+            });
+
+          } else {
+            console.log('File exists.  Send it BACK!');
+
+            fs.readFile(searchURL, 'utf8', function(err, data) {
+              if(err){
+                console.log(err);
+              } else {
+                headers.sendData(res, data, 200);
+              }
+            });
 
           }
         });
+
+      });
 
     },
 
@@ -100,56 +99,6 @@ exports.handleRequest = function (req, res, statusCode) {
   }
 
 };
-
-
-
-
-
-// steps to looking for URL
-
-
-        // fs.readFile(sitesPath, 'utf8', function(err, data) {
-        //     if(err){
-        //       console.log(err);
-        //     } else {
-
-        //       console.log("data", data);
-
-        //       if(data.indexOf(searchURL) > -1){
-        //         currentPath += searchURL;
-        //       } else {
-        //         currentPath = loadingPath;
-
-        //       }
-        //       // if we have the site
-        //         // send it to client
-        //       // else
-        //         // go get it (it's ok - loading.html is already visible)
-        //     }
-        // });
-
-
-
-        // fs.readFile(currentPath, 'utf8', function(err, data) {
-        //     if(err){
-        //       console.log(err);
-        //     } else {
-        //       // if we have the site
-        //         // send it to client
-        //       // else
-        //         // go get it (it's ok - loading.html is already visible)
-
-        //       console.log("getting to the loading page");
-        //       headers.sendData(res, data, 200);
-        //     }
-        // });
-
-
-
-
-      //read sites.txt
-      //look for exact match of requested url (decode msg)
-        //slice first 11 and match
 
 
 

@@ -58,9 +58,7 @@ exports.addUrlToList = function(file, urlToAdd){
 };
 
 exports.isURLArchived = function(toSearch, callback){
-/*   console.log("callback:", callback); */
   fs.open(toSearch,'r', function(err,fd) {
-/*     console.log(err); */
     callback(err, fd);
   });
 };
