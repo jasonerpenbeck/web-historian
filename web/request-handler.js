@@ -44,22 +44,68 @@ exports.handleRequest = function (req, res, statusCode) {
 
         msg = decodeURIComponent(msg);
 
-        searchURL = archive.paths.archivedSites + msg.slice(msg.indexOf('//') + 2) ;
+        if(msg.slice(4,8) === 'http') {
+          searchURL = archive.paths.archivedSites + msg.slice(msg.indexOf('//') + 2);
+        } else {
+          searchURL = archive.paths.archivedSites + msg;
+        }
 
-        archive.isURLArchived(searchURL, function(err, fd){
-            if(err) {
-              console.log(false);
-              return false;
+/*         console.log('searchURL: ',searchURL); */
+
+    // handle whether URL is already archived
+        if(archive.isURLArchived(searchURL, function(err, fd){
+          if(err) {
+            return false;
+          } else {
+            return true;
+          } }))
+
+           {
+            console.log('File exists.  Send it BACK!');
+
+            fs.readFile(archive.paths.archivedSites + 'searchURL', 'utf8', function(err, data) {
+            if(err){
+              console.log(err);
             } else {
-              console.log(true);
-              return true;
+              headers.sendData(res, data, 200);
             }
+          });
 
+
+          } else {
+
+            console.log('File does not exist.  Add to sites.txt');
+            headers.sendData(res, loadingPath, 200);
+            fs.appendFile(archive.paths.list,msg, function(err) {
+              if(err) {console.log(err);}
+
+            });
+
+/*             headers.sendData(res, data, 200); */
+
+          }
         });
 
+    },
 
-      });
+    OPTIONS: function(req, res){
 
+    }
+  };
+
+  if(actions[req.method]){
+      actions[req.method](req, res);
+  } else {
+      //send 404
+  }
+
+};
+
+
+
+
+
+// steps to looking for URL
 
 
         // fs.readFile(sitesPath, 'utf8', function(err, data) {
@@ -107,17 +153,3 @@ exports.handleRequest = function (req, res, statusCode) {
 
 
 
-    },
-
-    OPTIONS: function(req, res){
-
-    }
-  };
-
-  if(actions[req.method]){
-      actions[req.method](req, res);
-  } else {
-      //send 404
-  }
-
-};
