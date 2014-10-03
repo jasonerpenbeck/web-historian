@@ -3,17 +3,16 @@ var archive = require('../helpers/archive-helpers');
 var headers = require('./http-helpers');
 var fs = require('fs');
 var url = require('url');
-// require more modules/folders here!
+
+
 
 exports.handleRequest = function (req, res, statusCode) {
-
-  var filePath = '../web/public/index.html';
 
   var actions = {
 
     GET: function(req, res){
       if(req.url === '/') {
-        fs.readFile(filePath, 'utf8', function(err, data) {
+        fs.readFile(archive.paths.main, 'utf8', function(err, data) {
           if(err){
             console.log(err);
           } else {
@@ -30,8 +29,6 @@ exports.handleRequest = function (req, res, statusCode) {
     POST: function(req, res){
 
       var loadingPath = '../web/public/loading.html';
-      var sitesPath = '../archives/sites.txt';
-      var currentPath = '../archives/sites/';
 
       var msg = '';
       var searchURL;
@@ -87,9 +84,6 @@ exports.handleRequest = function (req, res, statusCode) {
 
     },
 
-    OPTIONS: function(req, res){
-
-    }
   };
 
   if(actions[req.method]){
@@ -100,5 +94,37 @@ exports.handleRequest = function (req, res, statusCode) {
 
 };
 
+// else {
+//         // coming in http://www.google.com
+//         var requestedURL = req.url.slice(7);
+//         console.log(requestedURL);
 
+//         archive.readListOfUrls(archive.paths.list, function(err, data){
+//           if(err){
+//             console.log("ERROR", err);
+//           } else {
+
+//             var arrayOfSites = data.trim().split('\n');
+
+//         if(req.url === ) {
+//             for(var i = 0; i < arrayOfSites.length; i++) {
+//               if(arrayOfSites[i] === requestedURL) {
+
+//                 fs.readFile(requestedURL, 'utf8', function(err, data) {
+//                   if(err){
+//                     console.log(err);
+//                   } else {
+//                     headers.sendData(res, data, 302);
+//                   }
+//                 });
+//               }
+//             }
+//           }
+//         });
+
+
+//         } else {
+//           headers.sendData(res, null, 404);
+//         }
+//       }
 

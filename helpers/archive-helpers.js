@@ -12,7 +12,9 @@ exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public/'),
   'archivedSites' : path.join(__dirname, '../archives/sites/'),
   'list' : path.join(__dirname, '../archives/sites.txt'),
-  'fetched': path.join(__dirname, '../archives/sites-fetched.txt')
+  'fetched': path.join(__dirname, '../archives/sites-fetched.txt'),
+  'main': path.join(__dirname, '../web/public/index.html'),
+  'loading': path.join(__dirname, '../web/public/loading.html')
 };
 
 // Used for stubbing paths for jasmine tests, do not modify
@@ -58,25 +60,18 @@ exports.isURLArchived = function(toSearch, callback){
   });
 };
 
-exports.downloadUrls = function(url,destination,callback){
+exports.downloadUrls = function(url, destination){
   var body = '';
   url = 'http://' + url;
 
-  console.log("url:",url);
-  console.log('OG: ',destination);
   http.get(url,function(response){
 
     response.on('data', function(chunk) {
       body += chunk;
     });
 
-    response.on('error', function(err) {
-      console.log('Error while downloading a URL: ',err);
-      err = err;
-    });
-
     response.on('end', function() {
-      fs.appendFile(destination,body, function(err) {
+      fs.appendFile(destination, body, function(err) {
         if(err) {
           console.log('Here is an error that happened when appending from downloadURL: ', err);
         }
